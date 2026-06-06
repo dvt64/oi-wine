@@ -1,0 +1,14 @@
+--- a/dlls/ws2_32/unixlib.c	2023-07-19 18:29:22.000000000 +0300
++++ b/dlls/ws2_32/unixlib.c	2026-06-01 19:16:37.145846110 +0300
+@@ -33,6 +33,11 @@
+ #include <unistd.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#ifdef __sun__
++#ifndef IPPROTO_IPIP
++#define IPPROTO_IPIP 4
++#endif
++#endif
+ #include <sys/time.h>
+ #ifdef HAVE_NETDB_H
+ # include <netdb.h>

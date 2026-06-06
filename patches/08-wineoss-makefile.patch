@@ -1,0 +1,8 @@
+--- a/dlls/wineoss.drv/Makefile.in	2023-07-19 18:29:22.000000000 +0300
++++ b/dlls/wineoss.drv/Makefile.in	2026-06-01 18:23:53.297556100 +0300
+@@ -11,4 +11,4 @@
+ 	mmaux.c \
+ 	mmdevdrv.c \
+ 	oss.c \
+-	ossmidi.c
++	ossmidi_sunos.c

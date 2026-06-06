@@ -1,0 +1,23 @@
+--- a/server/sock.c	2023-07-19 18:29:22.000000000 +0300
++++ b/server/sock.c	2026-06-01 19:16:37.147913737 +0300
+@@ -43,6 +43,11 @@
+ #include <sys/time.h>
+ #include <sys/types.h>
+ #include <sys/socket.h>
++#ifdef __sun__
++#ifndef IPPROTO_IPIP
++#define IPPROTO_IPIP 4
++#endif
++#endif
+ #include <sys/ioctl.h>
+ #ifdef HAVE_SYS_FILIO_H
+ # include <sys/filio.h>
+@@ -712,7 +717,7 @@
+     pfd.revents = 0;
+ 
+     /* Solaris' poll() sometimes returns nothing if given a 0ms timeout here */
+-    n = poll( &pfd, 1, 1 );
++    n = poll( &pfd, 1, 10 );
+     if ( n != 1 ) goto out; /* error or timeout */
+     if ( pfd.revents & POLLHUP )
+         ret = SOCK_SHUTDOWN_POLLHUP;

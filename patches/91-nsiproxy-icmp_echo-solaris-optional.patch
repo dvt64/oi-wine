@@ -1,0 +1,57 @@
+--- a/dlls/nsiproxy.sys/icmp_echo.c	2023-07-19 18:29:22.000000000 +0300
++++ b/dlls/nsiproxy.sys/icmp_echo.c	2026-06-01 17:38:35.723880411 +0300
+@@ -27,6 +27,7 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <errno.h>
++#include <string.h>
+ #include <limits.h>
+ #include <pthread.h>
+ #include <poll.h>
+@@ -689,9 +690,20 @@
+     struct icmp_reply_ctx ctx;
+     struct iovec iov[1];
+     BYTE cmsg_buf[1024];
++#if defined(__sun__) && !(defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 600)
++    struct msghdr msg;
++    memset( &msg, 0, sizeof(msg) );
++    msg.msg_name = &addr;
++    msg.msg_namelen = sizeof(addr);
++    msg.msg_iov = iov;
++    msg.msg_iovlen = ARRAY_SIZE(iov);
++    msg.msg_accrights = (caddr_t)cmsg_buf;
++    msg.msg_accrightslen = sizeof(cmsg_buf);
++#else
+     struct msghdr msg = { .msg_name = &addr, .msg_namelen = sizeof(addr),
+                           .msg_iov = iov, .msg_iovlen = ARRAY_SIZE(iov),
+                           .msg_control = cmsg_buf, .msg_controllen = sizeof(cmsg_buf) };
++#endif
+     int ip_hdr_len, recvd, reply_buf_len;
+     char *reply_buf;
+     struct icmp_hdr *icmp_hdr;
+@@ -704,8 +716,13 @@
+     iov[0].iov_len = reply_buf_len;
+ 
+     recvd = recvmsg( data->socket, &msg, 0 );
++#if defined(__sun__) && !(defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 600)
++    TRACE( "recvmsg() rets %d errno %d addr_len %d iovlen %d\n",
++           recvd, errno, msg.msg_namelen, (int)iov[0].iov_len );
++#else
+     TRACE( "recvmsg() rets %d errno %d addr_len %d iovlen %d msg_flags %x\n",
+            recvd, errno, msg.msg_namelen, (int)iov[0].iov_len, msg.msg_flags );
++#endif
+ 
+     if (recvd < 0) goto skip;
+     if (!data->ops->parse_ip_hdr( &msg, recvd, &ip_hdr_len, &ctx )) goto skip;
+@@ -713,7 +730,11 @@
+ 
+     icmp_hdr = (struct icmp_hdr *)(reply_buf + ip_hdr_len);
+     if ((ctx.data_size = data->ops->parse_icmp_hdr( data, icmp_hdr, recvd - ip_hdr_len, &ctx )) < 0) goto skip;
++#if defined(__sun__) && !(defined(_XOPEN_SOURCE) && _XOPEN_SOURCE >= 600)
++    if (0)
++#else
+     if (ctx.data_size && msg.msg_flags & MSG_TRUNC)
++#endif
+     {
+         free( reply_buf );
+         params->reply_len = data->ops->set_reply_ip_status( IP_GENERAL_FAILURE, params->bits, params->reply );
