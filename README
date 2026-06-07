@@ -30,7 +30,7 @@ cd ${WINE_PREFIX}/bin
 source ./env.sh
 ./wine notepad
 
-INSTALL SVR4 release package
+INSTALL SVR4 RELEASE PACKAGE
 
 sudo pkgadd -d <pkgname.pkg>
 
