@@ -35,4 +35,4 @@ INSTALL SVR4 RELEASE PACKAGE
 sudo pkgadd -d <pkgname.pkg>
 
 Alexandre Julliard
-julliard@winehq.org
+julliard@winehq.or
