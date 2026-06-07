@@ -33,3 +33,8 @@ source ./env.sh
 INSTALL SVR4 RELEASE PACKAGE
 
 sudo pkgadd -d <pkgname.pkg>
+
+WHAT WORKS
+
+NVIDIA OpenGL hardware accelerated, oss audio, network.
+Most old 32-bit games are works just fine, even Crysis (2007, 32 bit binary).
