@@ -1,0 +1,10 @@
+diff --git a/dlls/ntdll/unix/signal_i386.c b/dlls/ntdll/unix/signal_i386.c
+index a1bcacb..437cdda 100644
+@@ -257,6 +257,7 @@
+ 
+ #if defined(_SCO_DS) || defined(__sun)
+ #include <sys/regset.h>
++#include <ucontext.h>
+ #endif
+ 
+ #ifdef _SCO_DS

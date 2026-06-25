@@ -1,7 +1,7 @@
 #!/usr/bin/ksh
 # Wine 8.0.2 configure for OpenIndiana (32-bit, OSS, NVIDIA 32-bit libGL)
 set -e
-export PATH=/usr/gnu/bin:/usr/bin:$PATH
+export PATH=/usr/gnu/bin:/usr/bin:/bin
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
 cd "$ROOT"
 # 32-bit libGL: only /usr/X11/lib/NVIDIA/libGL.so (Mesa is amd64-only)

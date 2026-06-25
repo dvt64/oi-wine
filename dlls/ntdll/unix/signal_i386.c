@@ -257,6 +257,7 @@ static inline int set_thread_area( struct modify_ldt_s *ptr )
 
 #if defined(_SCO_DS) || defined(__sun)
 #include <sys/regset.h>
+#include <ucontext.h>
 #endif
 
 #ifdef _SCO_DS
