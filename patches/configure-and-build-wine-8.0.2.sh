@@ -1,5 +1,5 @@
 #!/usr/bin/ksh
-# Wine 8.0.2 configure for OpenIndiana (32-bit, OSS, NVIDIA 32-bit libGL)
+# Wine 8.0.2 configure and build for OpenIndiana / Oracle Solaris (32-bit, OSS, NVIDIA 32-bit libGL)
 set -e
 export PATH=/usr/gnu/bin:/usr/bin:/bin
 ROOT=$(cd "$(dirname "$0")/.." && pwd)
@@ -11,3 +11,8 @@ export LDFLAGS="-L/usr/X11/lib/NVIDIA -R/usr/X11/lib/NVIDIA -lumem -m32"
   CFLAGS="-std=gnu99 -O2 -m32 -Wno-incompatible-pointer-types -fcommon -D_XOPEN_SOURCE=600 -D__EXTENSIONS__" \
   CXXFLAGS="-std=gnu++11 -O2 -m32" \
   PKG_CONFIG_PATH="/usr/lib/32/pkgconfig"
+
+NPROC=$(psrinfo 2>/dev/null | wc -l | tr -d ' ')
+[ "$NPROC" -lt 1 ] && NPROC=4
+gmake -j"$NPROC" install
+
